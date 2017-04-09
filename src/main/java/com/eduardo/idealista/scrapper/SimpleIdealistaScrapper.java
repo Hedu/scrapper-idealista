@@ -73,7 +73,7 @@ public class SimpleIdealistaScrapper {
     private List<Flat> parseList(Document doc) {
         List<Flat> flats = new ArrayList<>();
 
-        Elements elements = doc.select("div.item-info-container");
+        Elements elements = doc.select("div.item div.item-info-container");
         if (elements == null || elements.isEmpty()) {
             return null;
         }
