@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.*;
 
 /**
@@ -50,7 +51,7 @@ public class SimpleIdealistaScrapper {
 
                     try {
                         Document doc = getDocument(url);
-                        List<Flat> neighborhoodFlats = parseList(doc);
+                        List<Flat> neighborhoodFlats = parseListSimple(doc);
 
                         if (neighborhoodFlats != null && !neighborhoodFlats.isEmpty()) {
                             flats.addAll(neighborhoodFlats);
@@ -61,6 +62,57 @@ public class SimpleIdealistaScrapper {
                     }
 
                 }
+            }
+        }
+        return flats;
+    }
+
+    private List<Flat> parseListSimple(Document doc) {
+        List<Flat> flats = new ArrayList<>();
+
+        Elements elements = doc.select("div.item div.item-info-container");
+        if (elements == null || elements.isEmpty()) {
+            return null;
+        }
+
+        for (Element element : elements) {
+            Element link = element.select("a.item-link").first();
+            if (link != null) {
+                String flatUrl = IdealistaUrlGenerator.getFlatUrl(link.attr("href"));
+                String title = link.text();
+                int price = 0;
+                int floor = 0;
+                int rooms = 0;
+                int size = 0;
+
+                Element elementPrice = element.select("span.item-price").first();
+                if (elementPrice != null) {
+                    price = Integer.valueOf(
+                            element.select("span.item-price").text().replace("€/mes", ""));
+                }
+
+                Elements itemDetails = element.select("span.item-detail");
+                if (itemDetails != null) {
+                    for (Element detail: itemDetails) {
+                        String text = detail.text();
+                        if (text.contains("hab")) {
+                            rooms = Integer.parseInt(text.split(" ")[0]);
+                        }
+                        else if (text.contains("exterior") || text.contains("interior")) {
+                            if (text.contains("Bajo")) {
+                                floor = 0;
+                            }
+                            else {
+                                floor = Integer.parseInt(text.substring(0, text.indexOf("ª")));
+                            }
+                        }
+                        else if (text.contains("m")){
+                            size = Integer.parseInt(text.split(" ")[0]);
+                        }
+                    }
+                }
+                Flat flat = new Flat(flatUrl, title, price, size, rooms, floor);
+                flats.add(flat);
             }
         }
         return flats;
