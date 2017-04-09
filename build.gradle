@@ -1,0 +1,24 @@
+group 'com.eduardo'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            'org.codehaus.groovy:groovy-all:2.4.4',
+            'org.jsoup:jsoup:1.10.2',
+            'javax.mail:mail:1.4.1'
+    )
+    testCompile(
+            'junit:junit:4.11',
+            'org.spockframework:spock-core:1.0-groovy-2.4',
+    )
+}
