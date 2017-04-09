@@ -3,9 +3,7 @@ package com.eduardo.idealista.app
 import com.eduardo.idealista.mail.MailSender
 import com.eduardo.idealista.model.Flat;
 import com.eduardo.idealista.model.SearchTerms;
-import com.eduardo.idealista.scrapper.SimpleIdealistaScrapper;
-
-import java.util.Map;
+import com.eduardo.idealista.scrapper.SimpleIdealistaScrapper
 
 /**
  * Created by hedu on 9/04/17.
@@ -13,7 +11,8 @@ import java.util.Map;
 public class Run {
 
     private static Set<Flat> previousFlats = new HashSet<>()
-    private static final long MILLIS = 60000
+    // 5 minutes
+    private static final long MILLIS = 60000 * 5
 
     public static void main(String[] args) {
 
@@ -34,6 +33,9 @@ public class Run {
                     mailContent <<= flat.toString() << "\n"
                 } else println "Flat: ${flat.url} already exists"
             }
+
+            previousFlats = new HashSet<>();
+            previousFlats.addAll(flats);
 
             if (mailContent != "") {
                 mailSender.sendMail('eperezghedu@gmail.com', "PISOS", mailContent.toString())
