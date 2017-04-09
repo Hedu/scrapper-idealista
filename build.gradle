@@ -11,6 +11,12 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.eduardo.idealista.app.Run'
+    }
+}
+
 dependencies {
     compile(
             'org.codehaus.groovy:groovy-all:2.4.4',
