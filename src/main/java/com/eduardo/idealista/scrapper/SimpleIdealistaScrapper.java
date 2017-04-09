@@ -44,15 +44,19 @@ public class SimpleIdealistaScrapper {
             for (String city: st.getZones().keySet()) {
                 List<String> neighborhoods = st.getZones().get(city);
                 for (String neighborhood: neighborhoods) {
+                    System.out.println("-----neighborhood: " + neighborhood);
                     String url = IdealistaUrlGenerator.generateSearchUrl(
                             city, neighborhood, maxPrice, minRooms,
                             includeGroundFloor, picturesRequired, publishedPeriod);
+
+                    System.out.println("url: " + url);
 
                     try {
                         Document doc = getDocument(url);
                         List<Flat> neighborhoodFlats = parseList(doc);
 
                         if (neighborhoodFlats != null && !neighborhoodFlats.isEmpty()) {
+                            System.out.println("Total: " + neighborhoodFlats.size());
                             flats.addAll(neighborhoodFlats);
                         }
                     } catch (ConnectionException ce) {
@@ -78,6 +82,7 @@ public class SimpleIdealistaScrapper {
             Element link = element.select("a.item-link").first();
             if (link != null) {
                 String flatUrl = IdealistaUrlGenerator.getFlatUrl(link.attr("href"));
+                System.out.println("flat url: " + flatUrl);
                 try {
                     Document flatDoc = getDocument(flatUrl);
 
@@ -134,6 +139,7 @@ public class SimpleIdealistaScrapper {
             }
             return new Flat(url,title, price, size, rooms, floor);
         }
+        System.out.println("Fallo: " + doc);
         return null;
     }
 
