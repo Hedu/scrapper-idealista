@@ -4,6 +4,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'groovy'
 
+version = '1.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -15,7 +16,7 @@ repositories {
 task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'Gradle Jar File Example',
-                'Implementation-Version': 1.0,
+                'Implementation-Version': version,
                 'Main-Class': 'com.eduardo.idealista.app.Run'
     }
     baseName = project.name + '-all'
@@ -35,5 +36,15 @@ dependencies {
     )
 }
 
-task stage(dependsOn: ['fatJar', 'clean'])
+task runJar(dependsOn:jar) << {
+    javaexec {
+        main="-jar";
+        args = [
+                "./build/libs/idealistaScrapper-all-$version-SNAPSHOT.jar"
+        ]
+    }
+}
+
+task stage(dependsOn: ['runJar','fatJar', 'clean'])
 fatJar.mustRunAfter clean
+runJar.mustRunAfter fatJar
