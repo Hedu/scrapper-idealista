@@ -22,3 +22,6 @@ dependencies {
             'org.spockframework:spock-core:1.0-groovy-2.4',
     )
 }
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
