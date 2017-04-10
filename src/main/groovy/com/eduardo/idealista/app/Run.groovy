@@ -18,7 +18,7 @@ public class Run {
 
         def zones = ['madrid': ['retiro', 'chamartin', 'chamberi', 'salamanca']]
 
-        SearchTerms st = new SearchTerms(zones, 900, 1, false, true, SearchTerms.PublishedPeriod.lastDay)
+        SearchTerms st = new SearchTerms(zones, 650, 1, false, true, SearchTerms.PublishedPeriod.lastDay)
         SimpleIdealistaScrapper sis = new SimpleIdealistaScrapper([st])
 
         MailSender mailSender = new MailSender("lfmbmail@gmail.com", "lfmbpass");
