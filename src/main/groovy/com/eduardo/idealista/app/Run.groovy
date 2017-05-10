@@ -2,8 +2,8 @@ package com.eduardo.idealista.app
 
 import com.eduardo.idealista.mail.MailSender
 import com.eduardo.idealista.model.Flat;
-import com.eduardo.idealista.model.SearchTerms;
-import com.eduardo.idealista.scrapper.SimpleIdealistaScrapper
+import com.eduardo.idealista.model.SearchTerms
+import com.eduardo.idealista.scrapper.AnonymousIdealistaScrapper;
 
 /**
  * Created by hedu on 9/04/17.
@@ -19,12 +19,12 @@ public class Run {
         def zones = ['madrid': ['retiro', 'chamartin', 'chamberi', 'salamanca']]
 
         SearchTerms st = new SearchTerms(zones, 900, 1, false, true, SearchTerms.PublishedPeriod.lastDay)
-        SimpleIdealistaScrapper sis = new SimpleIdealistaScrapper([st])
+        AnonymousIdealistaScrapper anonymousIdealistaScrapper = new AnonymousIdealistaScrapper([st])
 
         MailSender mailSender = new MailSender("lfmbmail@gmail.com", "lfmbpass");
 
         while (true ) {
-            def flats = sis.searchFlats();
+            def flats = anonymousIdealistaScrapper.searchFlats();
             def mailContent = ""
 
             flats.each { flat ->
@@ -42,6 +42,7 @@ public class Run {
             }
             Thread.sleep(MILLIS)
         }
+
 
     }
 }

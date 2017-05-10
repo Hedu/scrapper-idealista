@@ -14,15 +14,15 @@ import java.util.*;
 /**
  * Created by hedu on 6/04/17.
  */
-public class SimpleIdealistaScrapper {
+public class AnonymousIdealistaScrapper {
 
     List<SearchTerms> searchTerms;
 
-    public SimpleIdealistaScrapper() {
+    public AnonymousIdealistaScrapper() {
         searchTerms = new ArrayList<>();
     }
 
-    public SimpleIdealistaScrapper(List<SearchTerms> searchTerms) {
+    public AnonymousIdealistaScrapper(List<SearchTerms> searchTerms) {
         if (searchTerms == null) {
             this.searchTerms = new ArrayList<>();
         }
