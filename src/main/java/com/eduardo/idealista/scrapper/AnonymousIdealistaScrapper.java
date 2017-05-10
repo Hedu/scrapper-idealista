@@ -99,14 +99,15 @@ public class AnonymousIdealistaScrapper {
                             rooms = Integer.parseInt(text.split(" ")[0]);
                         }
                         else if (text.contains("exterior") || text.contains("interior")) {
-                            if (text.contains("Bajo")) {
+                            if (text.contains("Bajo") || text.contains("Entreplanta") ) {
                                 floor = 0;
                             }
                             else {
+                                System.out.print(text);
                                 floor = Integer.parseInt(text.substring(0, text.indexOf("ª")));
                             }
                         }
-                        else if (text.contains("m")){
+                        else if (text.contains("m²")){
                             size = Integer.parseInt(text.split(" ")[0]);
                         }
                     }
@@ -116,77 +117,6 @@ public class AnonymousIdealistaScrapper {
             }
         }
         return flats;
-    }
-
-    private List<Flat> parseList(Document doc) {
-        List<Flat> flats = new ArrayList<>();
-
-        Elements elements = doc.select("div.item div.item-info-container");
-        if (elements == null || elements.isEmpty()) {
-            return null;
-        }
-
-        for (Element element : elements) {
-            Element link = element.select("a.item-link").first();
-            if (link != null) {
-                String flatUrl = IdealistaUrlGenerator.getFlatUrl(link.attr("href"));
-                try {
-                    Document flatDoc = getDocument(flatUrl);
-
-                    Flat flat = parseFlat(flatDoc);
-                    if (flat != null) {
-                        flats.add(flat);
-                    }
-                }
-                catch (ConnectionException ce) {
-                    System.out.println(ce.getMessage());
-                    ce.printStackTrace(System.out);
-                }
-            }
-        }
-        return flats;
-    }
-
-    private Flat parseFlat(Document doc) {
-        String url = doc.location();
-        String title = null;
-        int price = 0;
-        int rooms = 0;
-        int floor = 0;
-        int size = 0;
-        Element mainInfo = doc.select("section.main-info").first();
-        if (mainInfo != null) {
-            Element titleSpan = mainInfo.select("h1 > span.txt-bold").first();
-            if (titleSpan != null) {
-                title = titleSpan.html();
-            }
-            Elements infoData = mainInfo.select("span > span.txt-big");
-            if (infoData != null && infoData.size() >= 4) {
-                for (Element element: infoData) {
-                    String parentHtml = element.parent().html();
-                    if (parentHtml.contains("€")) {
-                        price = Integer.parseInt(element.html());
-                    }
-                    else if (parentHtml.contains("hab")) {
-                        rooms = Integer.parseInt(element.html());
-                    }
-                    else if (parentHtml.contains("interior") || parentHtml.contains("exterior")) {
-                        String fl = element.html();
-                        if (fl.equalsIgnoreCase("bajo")) {
-                            floor = 0;
-                        }
-                        else {
-                            floor = Integer.parseInt(fl.substring(0, fl.length() -1));
-                        }
-                    }
-                    else if (parentHtml.contains("m")) {
-                        size = Integer.parseInt(element.html());
-                    }
-                }
-            }
-            return new Flat(url,title, price, size, rooms, floor);
-        }
-        return null;
     }
 
     private Document getDocument(String url) throws ConnectionException {
