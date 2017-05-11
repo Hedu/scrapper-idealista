@@ -31,6 +31,7 @@ public class Run {
         );
         AnonymousIdealistaScrapper anonymousScrapper = new AnonymousIdealistaScrapper([st])
 
+
         LoggedIdealistaScrapper loggedScrapper = new LoggedIdealistaScrapper(
                 conf.get(Configuration.LOGIN_IDEALISTA_EMAIL),
                 conf.get(Configuration.LOGIN_IDEALISTA_PASSWORD));
