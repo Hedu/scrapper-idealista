@@ -2,8 +2,10 @@ package com.eduardo.idealista.app
 
 import com.eduardo.idealista.mail.MailSender
 import com.eduardo.idealista.model.Flat;
-import com.eduardo.idealista.model.SearchTerms;
-import com.eduardo.idealista.scrapper.SimpleIdealistaScrapper
+import com.eduardo.idealista.model.SearchTerms
+import com.eduardo.idealista.scrapper.AnonymousIdealistaScrapper
+import com.eduardo.idealista.scrapper.LoggedIdealistaScrapper;
+import com.eduardo.idealista.settings.Configuration
 
 /**
  * Created by hedu on 9/04/17.
@@ -16,17 +18,34 @@ public class Run {
 
     public static void main(String[] args) {
 
-        def zones = ['madrid': ['retiro', 'chamartin', 'chamberi', 'salamanca']]
+        Configuration conf = new Configuration();
+        def zones = conf.getMap(Configuration.FILTER_ZONES);
 
-        SearchTerms st = new SearchTerms(zones, 650, 1, false, true, SearchTerms.PublishedPeriod.lastDay)
-        SimpleIdealistaScrapper sis = new SimpleIdealistaScrapper([st])
+        SearchTerms st = new SearchTerms(
+                zones,
+                conf.getInt(Configuration.FILTER_MAX_PRICE),
+                conf.getInt(Configuration.FILTER_MIN_ROOMS),
+                conf.getBoolean(Configuration.FILTER_INCLUDE_GROUND_FLOOR),
+                conf.getBoolean(Configuration.FILTER_PICTURES_REQUIRED),
+                SearchTerms.getPublishedPeriod(conf.get(Configuration.FILTER_PUBLISHED_PERIOD))
+        );
+        AnonymousIdealistaScrapper anonymousScrapper = new AnonymousIdealistaScrapper([st])
 
-        MailSender mailSender = new MailSender("lfmbmail@gmail.com", "lfmbpass");
+
+        LoggedIdealistaScrapper loggedScrapper = new LoggedIdealistaScrapper(
+                conf.get(Configuration.LOGIN_IDEALISTA_EMAIL),
+                conf.get(Configuration.LOGIN_IDEALISTA_PASSWORD));
+
+        MailSender mailSender = new MailSender(
+                conf.get(Configuration.MAIL_FROM),
+                conf.get(Configuration.MAIL_PASSWORD)
+        );
 
         while (true ) {
-            def flats = sis.searchFlats();
-            def mailContent = ""
+            Set<Flat> flats = anonymousScrapper.searchFlats().toSet()
+            flats.addAll(loggedScrapper.searchFlats())
 
+            def mailContent = ""
             flats.each { flat ->
                 if (previousFlats.add(flat)) {
                     println(flat)
@@ -38,7 +57,8 @@ public class Run {
             previousFlats.addAll(flats);
 
             if (mailContent != "") {
-                mailSender.sendMail('eperezghedu@gmail.com', "PISOS", mailContent.toString())
+                List<String> receivers = conf.getList(Configuration.MAIL_RECEIVERS);
+                receivers.each {mail -> mailSender.sendMail(mail, "PISOS", mailContent.toString())}
             }
             Thread.sleep(MILLIS)
         }

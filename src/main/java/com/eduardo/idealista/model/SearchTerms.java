@@ -76,4 +76,17 @@ public class SearchTerms {
     public void setPublishedPeriod(PublishedPeriod publishedPeriod) {
         this.publishedPeriod = publishedPeriod;
     }
+
+    public static PublishedPeriod getPublishedPeriod(String period) {
+        switch (period) {
+            case "day":
+                return PublishedPeriod.lastDay;
+            case "week":
+                return  PublishedPeriod.lastWeek;
+            case "month" :
+                return PublishedPeriod.lastMonth;
+            default:
+                return PublishedPeriod.all;
+        }
+    }
 }

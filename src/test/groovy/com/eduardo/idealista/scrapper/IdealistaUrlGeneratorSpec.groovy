@@ -22,8 +22,8 @@ class IdealistaUrlGeneratorSpec extends Specification {
         where:
         city     | neighborhood | maxPrice | minRooms | includeGroundFloor | picturesRequired | publishedPeriod                       | url
         "madrid" | "chamberi"   | -1       | -1       | true               | false            | SearchTerms.PublishedPeriod.all       | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi"
-        "madrid" | "chamberi"   | 650      | -1       | true               | false            | SearchTerms.PublishedPeriod.all | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/con-precio-hasta_650"
-        "madrid" | "chamberi"   | -1       | 1        | true               | false            | SearchTerms.PublishedPeriod.all | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/de-un-dormitorio,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas"
+        "madrid" | "chamberi"   | 650      | -1       | true               | false            | SearchTerms.PublishedPeriod.all       | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/con-precio-hasta_650"
+        "madrid" | "chamberi"   | -1       | 1        | true               | false            | SearchTerms.PublishedPeriod.all       | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/de-un-dormitorio,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas"
         "madrid" | "chamberi"   | -1       | -1       | false              | false            | SearchTerms.PublishedPeriod.all       | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/ultimas-plantas,plantas-intermedias"
         "madrid" | "chamberi"   | -1       | -1       | true               | true             | SearchTerms.PublishedPeriod.all       | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/fotos-o-video"
         "madrid" | "chamberi"   | -1       | -1       | true               | false            | SearchTerms.PublishedPeriod.lastDay   | "https://www.idealista.com/alquiler-viviendas/madrid/chamberi/publicado_ultimas-24-horas"
