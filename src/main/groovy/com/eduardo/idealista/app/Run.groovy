@@ -3,7 +3,8 @@ package com.eduardo.idealista.app
 import com.eduardo.idealista.mail.MailSender
 import com.eduardo.idealista.model.Flat;
 import com.eduardo.idealista.model.SearchTerms
-import com.eduardo.idealista.scrapper.AnonymousIdealistaScrapper;
+import com.eduardo.idealista.scrapper.AnonymousIdealistaScrapper
+import com.eduardo.idealista.scrapper.LoggedIdealistaScrapper;
 import com.eduardo.idealista.settings.Configuration
 
 /**
@@ -28,7 +29,11 @@ public class Run {
                 conf.getBoolean(Configuration.FILTER_PICTURES_REQUIRED),
                 SearchTerms.getPublishedPeriod(conf.get(Configuration.FILTER_PUBLISHED_PERIOD))
         );
-        AnonymousIdealistaScrapper anonymousIdealistaScrapper = new AnonymousIdealistaScrapper([st])
+        AnonymousIdealistaScrapper anonymousScrapper = new AnonymousIdealistaScrapper([st])
+
+        LoggedIdealistaScrapper loggedScrapper = new LoggedIdealistaScrapper(
+                conf.get(Configuration.LOGIN_IDEALISTA_EMAIL),
+                conf.get(Configuration.LOGIN_IDEALISTA_PASSWORD));
 
         MailSender mailSender = new MailSender(
                 conf.get(Configuration.MAIL_FROM),
@@ -36,9 +41,10 @@ public class Run {
         );
 
         while (true ) {
-            def flats = anonymousIdealistaScrapper.searchFlats();
-            def mailContent = ""
+            Set<Flat> flats = anonymousScrapper.searchFlats().toSet()
+            flats.addAll(loggedScrapper.searchFlats())
 
+            def mailContent = ""
             flats.each { flat ->
                 if (previousFlats.add(flat)) {
                     println(flat)
@@ -55,7 +61,6 @@ public class Run {
             }
             Thread.sleep(MILLIS)
         }
-
 
     }
 }
