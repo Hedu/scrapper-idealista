@@ -22,6 +22,8 @@ public class Configuration {
     public final static String FILTER_INCLUDE_GROUND_FLOOR = "filter.include.ground.floor";
     public final static String FILTER_PICTURES_REQUIRED = "filter.pictures.required";
     public final static String FILTER_PUBLISHED_PERIOD = "filter.published.period";
+    public final static String LOGIN_IDEALISTA_EMAIL = "login.idealista.email";
+    public final static String LOGIN_IDEALISTA_PASSWORD = "login.idealista.password";
 
     private Properties props;
 
